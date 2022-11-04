@@ -1,0 +1,36 @@
+diff --git a/platform/gsutil/gslib/vendored/boto/boto/dynamodb/types.py b/platform/gsutil/gslib/vendored/boto/boto/dynamodb/types.py
+index d9aaaa4c..1d50fb0c 100644
+--- a/platform/gsutil/gslib/vendored/boto/boto/dynamodb/types.py
++++ b/platform/gsutil/gslib/vendored/boto/boto/dynamodb/types.py
+@@ -27,11 +27,17 @@ Python types and vice-versa.
+ import base64
+ from decimal import (Decimal, DecimalException, Context,
+                      Clamped, Overflow, Inexact, Underflow, Rounded)
+-from collections.abc import Mapping
+ from boto.dynamodb.exceptions import DynamoDBNumberError
+ from boto.compat import filter, map, six, long_type
+ 
+ 
++
++try:
++    from collections.abc import Mapping
++except ImportError:
++    from collections import Mapping
++
++
+ DYNAMODB_CONTEXT = Context(
+     Emin=-128, Emax=126, rounding=None, prec=38,
+     traps=[Clamped, Overflow, Inexact, Rounded, Underflow])
+diff --git a/platform/gsutil/gslib/vendored/boto/boto/mws/connection.py b/platform/gsutil/gslib/vendored/boto/boto/mws/connection.py
+index 687fae74..ae92d087 100644
+--- a/platform/gsutil/gslib/vendored/boto/boto/mws/connection.py
++++ b/platform/gsutil/gslib/vendored/boto/boto/mws/connection.py
+@@ -116,7 +116,7 @@ def http_body(field):
+ def destructure_object(value, into, prefix, members=False):
+     if isinstance(value, boto.mws.response.ResponseElement):
+         destructure_object(value.__dict__, into, prefix, members=members)
+-    elif isinstance(value, abc.Mapping):
++    elif isinstance(value, collections_abc.Mapping):
+         for name in value:
+             if name.startswith('_'):
+                 continue
